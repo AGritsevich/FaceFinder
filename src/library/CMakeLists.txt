@@ -1,0 +1,29 @@
+
+set(HEADERS)
+set(SOURCES)
+include_directories($ENV{OPENCV_INCLUDE_DIR})
+file( GLOB SRC *.cc *.h)
+
+add_library(FindFaces SHARED ${SRC})
+
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    MESSAGE(STATUS "64 bits compiler detected" )
+	set(LIB_DIRECTORY $ENV{OPENCV_LIB_DIRx64})
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 ) 
+    MESSAGE(STATUS "32 bits compiler detected" )
+	set(LIB_DIRECTORY $ENV{OPENCV_LIB_DIRx86})
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
+message(STATUS "OPENCV_LIB_DIR: " ${LIB_DIRECTORY})
+
+find_library(OPENCV_CORE_LIB opencv_core2413 HINTS ${LIB_DIRECTORY})
+message(STATUS "OPENCV_CORE_LIB: " ${OPENCV_CORE_LIB})
+find_library(OPENCV_IMGPROC_LIB opencv_imgproc2413 HINTS ${LIB_DIRECTORY})
+message(STATUS "OPENCV_IMGPROC_LIB: " ${OPENCV_IMGPROC_LIB})
+find_library(OPENCV_HIGHGUI_LIB opencv_highgui2413 HINTS ${LIB_DIRECTORY})
+message(STATUS "OPENCV_HIGHGUI_LIB: " ${OPENCV_HIGHGUI_LIB})
+find_library(OPENCV_OBJDETECT_LIB opencv_objdetect2413 HINTS $ENV{LIB_DIRECTORY})
+message(STATUS "OPENCV_OBJDETECT_LIB: " ${OPENCV_OBJDETECT_LIB})
+
+target_link_libraries( FindFaces ${OPENCV_CORE_LIB} ${OPENCV_IMGPROC_LIB} ${OPENCV_HIGHGUI_LIB} ${OPENCV_OBJDETECT_LIB})
+#target_link_libraries( DisplayImage $ENV{$ENV{LIB_DIRECTORY})
