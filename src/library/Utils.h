@@ -19,7 +19,7 @@ class FilesystemHelper {
 public:
   static std::string ExtractFileName(std::string full_path);
   static std::string ExtractPath(std::string full_path);
-  static ImagesPathes GetAllImagesInFolder(std::string path);
+  static ImagesPathes GetAllImagesInFolder(std::string& path);
 };
 
 bool comparator(const Head& lhs, const Head& rhs);

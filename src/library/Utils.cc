@@ -52,16 +52,20 @@ jsonxx::Array JsonAdapter::PrepareJson(People& people) {
     std::string path;
     size_t pos = full_path.find_last_of(kDirSeparators);
     if (pos == std::string::npos) {// it's file name
-      path = ".";
+      path = "./";
     } else {// path
-      path = full_path.substr(0, pos);
+      path = full_path.substr(0, pos + 1);
     }
     return path;
   }
 
-  ImagesPathes FilesystemHelper::GetAllImagesInFolder(std::string path) {
+  ImagesPathes FilesystemHelper::GetAllImagesInFolder(std::string& path) {
     ImagesPathes imgs;
-    glob(path + "*.jpg", imgs, true); // true - recursive
+    if (path.at(path.size() - 1) != kDirSeparators[0]) {
+      path += kDirSeparators;
+    }
+
+    glob(path + "*.*", imgs, true); // true - recursive
     // return sorted strings
     return imgs;
   }
