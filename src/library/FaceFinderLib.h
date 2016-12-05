@@ -2,6 +2,7 @@
 #define SRC_LIBRARY_FACEFINDERLIB_H
 
 #include <stdint.h>
+#include <string>
 
 #ifdef __linux__ 
 #define DLL_EXP
@@ -21,9 +22,10 @@ const char kFunName[] = "Find_faces_in_folder";
 
 #ifdef __cplusplus    // If used by C++ code, 
  extern "C" {          // we need to export the C interface
-#endif // __cplusplus
+#endif // __cpluspluso
+  typedef void (__cdecl *IMGPROCDLL)(const std::string, const uint32_t);
 
- DLL_EXP void _C_ Find_faces_in_folder( const char* root_folder, uint16_t nThreads );
+  DLL_EXP void _C_ Find_faces_in_folder( const std::string root_folder, const uint16_t nThreads );
 
 #ifdef __cplusplus
  }

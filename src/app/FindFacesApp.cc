@@ -12,7 +12,6 @@
 
 class DynamicLibraryConnector {
 public:
-  typedef void (__cdecl *IMGPROCDLL)(std::string, uint32_t);
   virtual bool Open(std::string lib_path) =0;
   virtual bool Close() =0;
   virtual IMGPROCDLL LibraryFunction(std::string name) =0;
@@ -130,7 +129,7 @@ int main(int argc, char** argv) {
 #endif
 
   if (connector->Open(kLibName)) {
-    DynamicLibraryConnector::IMGPROCDLL processor = connector->LibraryFunction(kFunName);
+    IMGPROCDLL processor = connector->LibraryFunction(kFunName);
     if (processor) {
       (processor)(first_param, second_param);
       retVal = 0;
