@@ -8,22 +8,30 @@
 #include <stdint.h>
 #include <iostream>
 #include "Utils.h"
+#include <windows.h>
  
 
 FacesRecognition::FacesRecognition() :
   face_cascade_name("haarcascade_frontalface_alt.xml"),
   eyes_cascade_name("haarcascade_eye_tree_eyeglasses.xml"),
-  mouth_cascafe_name("haarcascade_mcs_mouth.xml") {
-    //-- 1. Load the cascades
-    if( !face_cascade.load( face_cascade_name ) ){ 
-      std::cout << "--(!)Error loading face cascade\n"; 
-    };
-    if( !eyes_cascade.load( eyes_cascade_name ) ){ 
-      std::cout << "--(!)Error loading eyes cascade\n";  
-    };
-    if( !mouth_cascade.load( mouth_cascafe_name ) ){ 
-      std::cout << "--(!)Error loading mouth cascade\n"; 
-    };
+  mouth_cascafe_name("haarcascade_mcs_mouth.xml") {}
+
+bool FacesRecognition::Init() {
+  bool retVal = true;
+  //-- 1. Load the cascades
+  if( !face_cascade.load( face_cascade_name ) ){ 
+    std::cout << "--(!)Error loading face cascade\n";
+    retVal = false;
+  };
+  if( !eyes_cascade.load( eyes_cascade_name ) ){ 
+    std::cout << "--(!)Error loading eyes cascade\n";
+    retVal = false;
+  };
+  if( !mouth_cascade.load( mouth_cascafe_name ) ){ 
+    std::cout << "--(!)Error loading mouth cascade\n";
+    retVal = false;
+  };
+  return retVal;
 }
 
 People FacesRecognition::ThreadFacade(const std::string& path) {
@@ -70,30 +78,30 @@ cv::Mat FacesRecognition::Reflect( const cv::Mat& src ) {
   return dst;
 }
 
-void FacesRecognition::SaveFace(const cv::Rect face, const std::string& path, const uint16_t n) {
+void FacesRecognition::SaveFace(const cv::Mat src_img, const cv::Rect face, const std::string& path, const uint16_t n) {
   // Save face
-  std::string file_name = "face_#" + std::to_string(n) + ".jpg";
-  cv::Mat corp(src_image, face); // Copy?
+  std::string file_name = path.substr(0, path.size() - 5) + "face_#" + std::to_string(n) + ".jpg";
+  cv::Mat corp(src_img, face); // Copy?
   cv::Mat reflected_face = Reflect(corp);
-  cv::imwrite(FilesystemHelper::ExtractPath(path) + file_name, reflected_face); // CV_IMWRITE_JPEG_QUALITY
+  cv::imwrite(FilesystemHelper::ExtractPath() + file_name, reflected_face); // CV_IMWRITE_JPEG_QUALITY
 }
 
 People FacesRecognition::CollectPeople(const std::string& image_path) {
   using namespace cv;
 
   std::ofstream check_file;
-  check_file.open (image_path, std::ios::binary);
+  check_file.open (image_path, std::ios::binary| std::ios::in);
   if (!check_file.good()) {
     std::cout <<  "Could not open or find the image: " << image_path << std::endl ;
   }
   check_file.close();
 
   //-- 2. Read the image file
-  src_image = imread(image_path, CV_LOAD_IMAGE_COLOR);   // Read the file
+  Mat src_image = imread(image_path, CV_LOAD_IMAGE_COLOR);   // Read the file
 
   if(!src_image.data ) // Check for invalid input
   {
-    std::cout <<  "Could not open or find the image: " << image_path << std::endl ;
+    std::cout <<  "Not supported format of file: " << image_path << std::endl ;
     return People();
   }
 
@@ -121,7 +129,7 @@ People FacesRecognition::CollectPeople(const std::string& image_path) {
     mouth_cascade.detectMultiScale( faceROI, man.mouths_, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
     man.file_name_ = FilesystemHelper::ExtractFileName(image_path);
     people_on_photo.push_back(man);
-    SaveFace(face, image_path, i++);
+    SaveFace(src_image, face, image_path, i++);
   }
 
   //-- Show what you got

@@ -9,11 +9,12 @@
 class FacesRecognition {
 public:
   FacesRecognition();
+  bool Init();
   People ThreadFacade(const std::string& path);
 
 private:
   cv::Mat Reflect(const cv::Mat& src );
-  void SaveFace(const cv::Rect face, const std::string& path, const uint16_t n);
+  void SaveFace(const cv::Mat src_img, const cv::Rect face, const std::string& path, const uint16_t n);
   People CollectPeople(const std::string& image_path);
   void Notify(const size_t count, const std::string path);
 
@@ -24,7 +25,6 @@ private:
   cv::CascadeClassifier face_cascade;
   cv::CascadeClassifier eyes_cascade;
   cv::CascadeClassifier mouth_cascade;
-  cv::Mat src_image;
 };
 
 #endif // SRC_LIBRARY_FACESRECOGNITION_H

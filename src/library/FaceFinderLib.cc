@@ -8,12 +8,14 @@ typedef std::shared_ptr<AData<People>> AsyncData;
 typedef std::deque<AsyncData> AsyncDataList;
 typedef std::pair<AsyncDataList, std::string> AsyncDataPair;
 
-void Find_faces_in_folder( const std::string root_folder, const uint16_t nThreads)
+void Find_faces_in_folder( std::string root_folder, const uint16_t nThreads)
 {
-  ThreadPool pool(nThreads);
-
-  ImagesPathes img_pathes = FilesystemHelper::GetAllImagesInFolder(root_folder);
   FacesRecognition recognator;
+  if (!recognator.Init()) {
+    return;
+  }
+  ThreadPool pool(nThreads);
+  ImagesPathes img_pathes = FilesystemHelper::GetAllImagesInFolder(root_folder);
   // Start proceed
   // It's looks little strange, but I have no time do it better
   // TODO refactoring
