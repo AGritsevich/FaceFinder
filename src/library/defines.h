@@ -22,7 +22,7 @@ typedef std::vector<Head> People;
 #ifdef __linux__ 
 const char kDirSeparators[] = "/";
 #else // Unix
-const char kDirSeparators[] = "/\\";
+const char kDirSeparators[] = "\\";
 #endif
 
 typedef std::vector<std::string> ImagesPathes;
