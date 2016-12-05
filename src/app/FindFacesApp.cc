@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     break;
   }
 
-  if(first_param.compare("help")) {
+  if(0 == first_param.compare("help")) {
     std::cout << kHelpMessage << std::endl;
     return retVal;
   }
