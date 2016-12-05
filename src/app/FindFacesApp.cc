@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <stdint.h>
 #include "src/library/FaceFinderLib.h"
@@ -78,7 +78,24 @@ public:
 
   bool Open(std::string lib_path) override {
     hinstLib_ = LoadLibrary(TEXT(lib_path.c_str())); 
-    return hinstLib_ != NULL;
+
+    if (hinstLib_ == NULL) {
+      DWORD   dwLastError = ::GetLastError();
+      TCHAR   lpBuffer[256] = {0};
+      if(dwLastError != 0)    // Don't want to see a "operation done successfully" error ;-)
+        ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,                 // It´s a system error
+        NULL,                                      // No string to be formatted needed
+        dwLastError,                               // Hey Windows: Please explain this error!
+        MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),  // Do it in the standard language
+        lpBuffer,              // Put the message here
+        sizeof(lpBuffer)-1,                     // Number of bytes to store the message
+        NULL);
+
+        std::cout << "Error open library! Error code: " << dwLastError << ", " << lpBuffer << std::endl; 
+
+        return false;
+    }
+    return true;
   }
 
   bool Close() {
