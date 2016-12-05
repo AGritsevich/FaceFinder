@@ -7,7 +7,7 @@
 #include <string>
 #include <stdint.h>
 #include <iostream>
-#include "defines.h"
+#include "Utils.h"
  
 
 FacesRecognition::FacesRecognition() :
@@ -26,26 +26,24 @@ FacesRecognition::FacesRecognition() :
     };
 }
 
-People FacesRecognition::ThreadFacade(std::string& path) {
-  people_.set_path(path);
-
+People FacesRecognition::ThreadFacade(const std::string& path) {
   People people = CollectPeople(path);
 
-  Notify();
+  Notify(people.size(), path);
 
   return people;
 }
 
-void FacesRecognition::Notify() {
+void FacesRecognition::Notify(const size_t count, const std::string path) {
   // print result
   std::cout << "Image processed, faces: " 
-    << people_.Size() 
+    << count
     << ", file name " 
-    << people_.path()
+    << path
     << std::endl;
 }
 
-cv::Mat FacesRecognition::Reflect( cv::Mat& src ) {
+cv::Mat FacesRecognition::Reflect( const cv::Mat& src ) {
   using namespace cv;
   /// Create dst, map_x and map_y with the same size as src:
   Mat dst;
@@ -72,22 +70,30 @@ cv::Mat FacesRecognition::Reflect( cv::Mat& src ) {
   return dst;
 }
 
-void FacesRecognition::SaveFace(cv::Rect face, uint16_t n ) {
+void FacesRecognition::SaveFace(const cv::Rect face, const std::string& path, const uint16_t n) {
   // Save face
   std::string file_name = "face_#" + std::to_string(n) + ".jpg";
   cv::Mat corp(src_image, face); // Copy?
   cv::Mat reflected_face = Reflect(corp);
-  cv::imwrite(FacesKeeper::ExtractPath(people_.path()) + file_name, reflected_face);
+  cv::imwrite(FilesystemHelper::ExtractPath(path) + file_name, reflected_face); // CV_IMWRITE_JPEG_QUALITY
 }
 
-People FacesRecognition::CollectPeople(std::string image_path) {
+People FacesRecognition::CollectPeople(const std::string& image_path) {
   using namespace cv;
+
+  std::ofstream check_file;
+  check_file.open (image_path, std::ios::binary);
+  if (!check_file.good()) {
+    std::cout <<  "Could not open or find the image: " << image_path << std::endl ;
+  }
+  check_file.close();
+
   //-- 2. Read the image file
   src_image = imread(image_path, CV_LOAD_IMAGE_COLOR);   // Read the file
 
-  if(!src_image.data )                              // Check for invalid input
+  if(!src_image.data ) // Check for invalid input
   {
-    std::cout <<  "Could not open or find the image" << std::endl ;
+    std::cout <<  "Could not open or find the image: " << image_path << std::endl ;
     return People();
   }
 
@@ -102,6 +108,7 @@ People FacesRecognition::CollectPeople(std::string image_path) {
   face_cascade.detectMultiScale( frame_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, Size(30, 30) );
 
   auto i = 0;
+  People people_on_photo;
   for( auto face:faces) {
     Head man;
     man.face_ = face;
@@ -112,13 +119,13 @@ People FacesRecognition::CollectPeople(std::string image_path) {
     eyes_cascade.detectMultiScale( faceROI, man.eyes_, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
     //-- In each face, detect mouth
     mouth_cascade.detectMultiScale( faceROI, man.mouths_, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
-    man.file_name_ = FacesKeeper::ExtractFileName(image_path);
-    people_.add_man(man);
-    SaveFace(face, i++);
+    man.file_name_ = FilesystemHelper::ExtractFileName(image_path);
+    people_on_photo.push_back(man);
+    SaveFace(face, image_path, i++);
   }
 
   //-- Show what you got
   //imshow( "Foo", image );
   // int c = waitKey(10);
-  return people_.people();
+  return people_on_photo;
 }

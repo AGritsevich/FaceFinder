@@ -1,41 +1,28 @@
 ﻿#include "FaceFinderLib.h"
-#include "FacesKeeper.h"
 #include "FacesRecognition.h"
 #include "threadpool.h"
-#include "JsonAdapter.h"
+#include "Utils.h"
 #include "defines.h"
 
 typedef std::shared_ptr<AData<People>> AsyncData;
 typedef std::deque<AsyncData> AsyncDataList;
 typedef std::pair<AsyncDataList, std::string> AsyncDataPair;
 
-ImagesPathes GetAllImagesInFolder(std::string path) {
-  ImagesPathes imgs;
-  cv::glob(path, imgs, true); // true - recursive
-  // return sorted strings
-  return imgs;
-}
-
-bool comparator(const Head& lhs, const Head& rhs)
-{
-  return true;
-}
-
-void Find_faces_in_folder( const char* root_folder, uint16_t nThreads)
+void Find_faces_in_folder( const std::string root_folder, const uint16_t nThreads)
 {
   ThreadPool pool(nThreads);
 
-  ImagesPathes img_pathes = GetAllImagesInFolder(root_folder);
+  ImagesPathes img_pathes = FilesystemHelper::GetAllImagesInFolder(root_folder);
   FacesRecognition recognator;
   // Start proceed
   // It's looks little strange, but I have no time do it better
-  // TODO optimize
+  // TODO refactoring
   std::deque<AsyncDataPair> all_data;
   AsyncDataList on_level_data;
-  std::string working_dir = img_pathes[0];
+  std::string working_dir = FilesystemHelper::ExtractPath(img_pathes[0]);
  
   for(auto path:img_pathes ) {
-    std::string new_dir = FacesKeeper::ExtractPath(path);
+    std::string new_dir = FilesystemHelper::ExtractPath(path);
     if (0 != working_dir.compare(new_dir)) {
        all_data.push_back(std::make_pair(on_level_data, working_dir));
        on_level_data.clear();
@@ -44,6 +31,9 @@ void Find_faces_in_folder( const char* root_folder, uint16_t nThreads)
       AsyncData async_keeper = pool.runAsync<People>(&FacesRecognition::ThreadFacade, &recognator, path);
       on_level_data.push_back(async_keeper);
   }
+  // save last
+  all_data.push_back(std::make_pair(on_level_data, working_dir));
+  on_level_data.clear();
  
    // Wait
    pool.waitFinishAllTasks();
