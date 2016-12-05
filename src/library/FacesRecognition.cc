@@ -26,32 +26,14 @@ FacesRecognition::FacesRecognition() :
     };
 }
 
-void FacesRecognition::ThreadFacade(std::string& path) {
+People FacesRecognition::ThreadFacade(std::string& path) {
   people_.set_path(path);
 
-  if (!ReadImage(path)) {
-    return;
-  }
-
-  CollectPeople();
-
-  people_.Save();
+  People people = CollectPeople(path);
 
   Notify();
-}
 
-bool FacesRecognition::ReadImage(std::string image_path) {
-  using namespace cv;
-
-  //-- 2. Read the image file
-  src_image = imread(image_path, CV_LOAD_IMAGE_COLOR);   // Read the file
-
-  if(!src_image.data )                              // Check for invalid input
-  {
-    std::cout <<  "Could not open or find the image" << std::endl ;
-    return false;
-  }
-  return true;
+  return people;
 }
 
 void FacesRecognition::Notify() {
@@ -95,11 +77,20 @@ void FacesRecognition::SaveFace(cv::Rect face, uint16_t n ) {
   std::string file_name = "face_#" + std::to_string(n) + ".jpg";
   cv::Mat corp(src_image, face); // Copy?
   cv::Mat reflected_face = Reflect(corp);
-  cv::imwrite(people_.ExtractPath() + file_name, reflected_face);
+  cv::imwrite(FacesKeeper::ExtractPath(people_.path()) + file_name, reflected_face);
 }
 
-People FacesRecognition::CollectPeople( ) {
+People FacesRecognition::CollectPeople(std::string image_path) {
   using namespace cv;
+  //-- 2. Read the image file
+  src_image = imread(image_path, CV_LOAD_IMAGE_COLOR);   // Read the file
+
+  if(!src_image.data )                              // Check for invalid input
+  {
+    std::cout <<  "Could not open or find the image" << std::endl ;
+    return People();
+  }
+
   //-- 3. Apply the classifier to the image
   std::vector<Rect> faces;
   Mat frame_gray;
@@ -121,6 +112,7 @@ People FacesRecognition::CollectPeople( ) {
     eyes_cascade.detectMultiScale( faceROI, man.eyes_, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
     //-- In each face, detect mouth
     mouth_cascade.detectMultiScale( faceROI, man.mouths_, 1.1, 2, 0 |CV_HAAR_SCALE_IMAGE, Size(30, 30) );
+    man.file_name_ = FacesKeeper::ExtractFileName(image_path);
     people_.add_man(man);
     SaveFace(face, i++);
   }

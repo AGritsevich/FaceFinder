@@ -4,7 +4,7 @@
 #include "JsonAdapter.h"
 
 
-std::string FacesKeeper::ExtractFileName() {
+std::string FacesKeeper::ExtractFileName(std::string full_path) {
   size_t pos = full_path.find_last_of(kDirSeparators);
   std::string file_name;
   if (pos == std::string::npos) {// it's file name
@@ -15,7 +15,7 @@ std::string FacesKeeper::ExtractFileName() {
   return file_name;
 }
 
-std::string FacesKeeper::ExtractPath() {
+std::string FacesKeeper::ExtractPath(std::string full_path) {
   std::string path;
   size_t pos = full_path.find_last_of(kDirSeparators);
   if (pos == std::string::npos) {// it's file name
@@ -31,17 +31,11 @@ void FacesKeeper::add_man(Head man) {
 }
 
 void FacesKeeper::set_path(std::string path) {
-  full_path = path;
+  full_path_ = path;
 }
 
 const std::string& FacesKeeper::path() {
-  return full_path;
-}
-
-void FacesKeeper::Save() {
-  std::string file_name = ExtractFileName();
-  std::string path = ExtractPath();
-  JsonAdapter::SaveJson(head_cluster_, file_name, path);
+  return full_path_;
 }
 
 size_t FacesKeeper::Size() {

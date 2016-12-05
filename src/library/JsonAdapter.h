@@ -9,10 +9,10 @@
 
 class JsonAdapter {
 private:
-  static jsonxx::Array PrepareJson(People& people, const std::string& file_name);
+  static jsonxx::Array PrepareJson(People& people);
 
 public:
-  static bool SaveJson(People& people, const std::string& name, const std::string& path);
+  static bool SaveJson(People& people, const std::string& path);
 };
 
 #endif // SRC_LIBRARY_SAVEDATA_H

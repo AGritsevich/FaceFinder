@@ -3,6 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <vector>
+#include <string>
 
 typedef cv::Rect Face;
 // Support not only mankind :)
@@ -13,6 +14,7 @@ typedef struct {
   Face face_;
   Eyes eyes_;
   Mouths mouths_;
+  std::string file_name_;
 }Head;
 
 typedef std::vector<Head> People;

@@ -1,5 +1,5 @@
-#ifndef THREADPOOL_H
-#define THREADPOOL_H
+#ifndef SRC_LIBRARY_THREADPOOL_H
+#define SRC_LIBRARY_THREADPOOL_H
 
 #include <functional>
 #include <thread>
@@ -137,4 +137,4 @@ private:
   std::vector<worker_ptr>::iterator it_last_used_worker_;
 };
 
-#endif // THREADPOOL_H
+#endif // SRC_LIBRARY_THREADPOOL_H

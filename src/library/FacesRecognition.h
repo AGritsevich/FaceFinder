@@ -13,14 +13,13 @@
 class FacesRecognition {
 public:
   FacesRecognition();
-  void ThreadFacade(std::string& path);
-  bool ReadImage(std::string image_path);
+  People ThreadFacade(std::string& path);
   void Notify();
 
 private:
   cv::Mat Reflect( cv::Mat& src );
   void SaveFace(cv::Rect face, uint16_t n );
-  People CollectPeople( );
+  People CollectPeople(std::string image_path);
 
 private:
   const std::string face_cascade_name;
