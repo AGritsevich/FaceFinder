@@ -9,7 +9,6 @@
 class FacesRecognition {
 public:
   FacesRecognition();
-  bool Init();
   People ThreadFacade(const std::string& path);
 
 private:
@@ -22,9 +21,6 @@ private:
   const std::string face_cascade_name;
   const std::string eyes_cascade_name;
   const std::string mouth_cascafe_name;
-  cv::CascadeClassifier face_cascade;
-  cv::CascadeClassifier eyes_cascade;
-  cv::CascadeClassifier mouth_cascade;
 };
 
 #endif // SRC_LIBRARY_FACESRECOGNITION_H

@@ -11,9 +11,6 @@ typedef std::pair<AsyncDataList, std::string> AsyncDataPair;
 void Find_faces_in_folder( std::string root_folder, const uint16_t nThreads)
 {
   FacesRecognition recognator;
-  if (!recognator.Init()) {
-    return;
-  }
   ThreadPool pool(nThreads);
   ImagesPathes img_pathes = FilesystemHelper::GetAllImagesInFolder(root_folder);
   // Start proceed

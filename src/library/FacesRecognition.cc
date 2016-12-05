@@ -16,24 +16,6 @@ FacesRecognition::FacesRecognition() :
   eyes_cascade_name("haarcascade_eye_tree_eyeglasses.xml"),
   mouth_cascafe_name("haarcascade_mcs_mouth.xml") {}
 
-bool FacesRecognition::Init() {
-  bool retVal = true;
-  //-- 1. Load the cascades
-  if( !face_cascade.load( face_cascade_name ) ){ 
-    std::cout << "--(!)Error loading face cascade\n";
-    retVal = false;
-  };
-  if( !eyes_cascade.load( eyes_cascade_name ) ){ 
-    std::cout << "--(!)Error loading eyes cascade\n";
-    retVal = false;
-  };
-  if( !mouth_cascade.load( mouth_cascafe_name ) ){ 
-    std::cout << "--(!)Error loading mouth cascade\n";
-    retVal = false;
-  };
-  return retVal;
-}
-
 People FacesRecognition::ThreadFacade(const std::string& path) {
   People people = CollectPeople(path);
 
@@ -80,15 +62,33 @@ cv::Mat FacesRecognition::Reflect( const cv::Mat& src ) {
 
 void FacesRecognition::SaveFace(const cv::Mat src_img, const cv::Rect face, const std::string& path, const uint16_t n) {
   // Save face
-  std::string file_name = path.substr(0, path.size() - 5) + "face_#" + std::to_string(n) + ".jpg";
+  std::string file_name = path.substr(0, path.size() - 4) + "_face_#" + std::to_string(n) + ".jpg";
   cv::Mat corp(src_img, face); // Copy?
   cv::Mat reflected_face = Reflect(corp);
-  cv::imwrite(FilesystemHelper::ExtractPath() + file_name, reflected_face); // CV_IMWRITE_JPEG_QUALITY
+  cv::imwrite(file_name, reflected_face); // CV_IMWRITE_JPEG_QUALITY
 }
 
 People FacesRecognition::CollectPeople(const std::string& image_path) {
   using namespace cv;
 
+  cv::CascadeClassifier face_cascade;
+  cv::CascadeClassifier eyes_cascade;
+  cv::CascadeClassifier mouth_cascade;
+
+  //-- 1. Load the cascades
+  if( !face_cascade.load( face_cascade_name ) ){ 
+    std::cout << "--(!)Error loading face cascade\n";
+    return People();
+  };
+  if( !eyes_cascade.load( eyes_cascade_name ) ){ 
+    std::cout << "--(!)Error loading eyes cascade\n";
+    return People();
+  };
+  if( !mouth_cascade.load( mouth_cascafe_name ) ){ 
+    std::cout << "--(!)Error loading mouth cascade\n";
+    return People();
+  };
+  
   std::ofstream check_file;
   check_file.open (image_path, std::ios::binary| std::ios::in);
   if (!check_file.good()) {
