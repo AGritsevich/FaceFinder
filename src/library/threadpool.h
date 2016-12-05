@@ -81,7 +81,7 @@ public:
       threads = 1;
     }
 
-    for (auto i = 0; i < threads; i++) {
+    for (size_t i = 0; i < threads; i++) {
       worker_ptr pWorker(new Worker);
       workers_.push_back(pWorker);
     }
