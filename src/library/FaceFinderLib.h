@@ -10,7 +10,11 @@ const char kLibName[] = "FindFaces.so";
 #else // WIN32
 #define DLL_EXP __declspec(dllexport)
 #define _C_ __cdecl
+#ifdef _DEBUG
+const char kLibName[] = "d:\\Work\\TestTaskRegula\\buildx64\\src\\library\\Debug\\FindFaces.dll";
+#else
 const char kLibName[] = "FindFaces.dll";
+#endif // _DEBUG
 #endif // WIN32
 
 const char kFunName[] = "Find_faces_in_folder";
