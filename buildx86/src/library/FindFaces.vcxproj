@@ -29,13 +29,13 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120_CTP_Nov2012</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -320,16 +320,16 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\FaceFinderLib.h" />
-    <ClInclude Include="D:\Work\TestTaskRegula\src\library\FacesKeeper.h" />
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\FacesRecognition.h" />
-    <ClInclude Include="D:\Work\TestTaskRegula\src\library\JsonAdapter.h" />
+    <ClInclude Include="D:\Work\TestTaskRegula\src\library\Utils.h" />
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\defines.h" />
+    <ClInclude Include="D:\Work\TestTaskRegula\src\library\glob.h" />
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\jsonxx.h" />
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\threadpool.h" />
     <ClCompile Include="D:\Work\TestTaskRegula\src\library\FaceFinderLib.cc" />
-    <ClCompile Include="D:\Work\TestTaskRegula\src\library\FacesKeeper.cc" />
     <ClCompile Include="D:\Work\TestTaskRegula\src\library\FacesRecognition.cc" />
-    <ClCompile Include="D:\Work\TestTaskRegula\src\library\JsonAdapter.cc" />
+    <ClCompile Include="D:\Work\TestTaskRegula\src\library\Utils.cc" />
+    <ClCompile Include="D:\Work\TestTaskRegula\src\library\glob.cc" />
     <ClCompile Include="D:\Work\TestTaskRegula\src\library\jsonxx.cc" />
   </ItemGroup>
   <ItemGroup>

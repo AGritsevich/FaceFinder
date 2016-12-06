@@ -4,13 +4,13 @@
     <ClCompile Include="D:\Work\TestTaskRegula\src\library\FaceFinderLib.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Work\TestTaskRegula\src\library\FacesKeeper.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="D:\Work\TestTaskRegula\src\library\FacesRecognition.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="D:\Work\TestTaskRegula\src\library\JsonAdapter.cc">
+    <ClCompile Include="D:\Work\TestTaskRegula\src\library\Utils.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Work\TestTaskRegula\src\library\glob.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D:\Work\TestTaskRegula\src\library\jsonxx.cc">
@@ -21,16 +21,16 @@
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\FaceFinderLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Work\TestTaskRegula\src\library\FacesKeeper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\FacesRecognition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="D:\Work\TestTaskRegula\src\library\JsonAdapter.h">
+    <ClInclude Include="D:\Work\TestTaskRegula\src\library\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Work\TestTaskRegula\src\library\glob.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D:\Work\TestTaskRegula\src\library\jsonxx.h">
