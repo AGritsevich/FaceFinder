@@ -7,13 +7,7 @@
 #include <mutex>
 #include <memory>
 #include <condition_variable>
-
-template<class _T>
-struct AData {
-  AData():ready(false){}
-  bool ready;
-  _T data;
-};
+#include "defines.h"
 
 class ThreadPool {
 public:

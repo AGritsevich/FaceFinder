@@ -4,6 +4,15 @@
 #include <opencv2/core/core.hpp>
 #include <vector>
 #include <string>
+#include <memory>
+#include <deque>
+
+template<class _T>
+struct AData {
+  AData():ready(false){}
+  bool ready;
+  _T data;
+};
 
 typedef cv::Rect Face;
 // Support not only mankind :)
@@ -18,6 +27,17 @@ typedef struct {
 }Head;
 
 typedef std::vector<Head> People;
+
+typedef std::shared_ptr<AData<People>> AsyncData;
+typedef std::deque<AsyncData> AsyncDataList;
+typedef struct _AsyncDataPair{
+  AsyncDataList people_from_folder; 
+  std::string folder;
+  _AsyncDataPair(AsyncDataList ll, std::string ff) {
+    people_from_folder = std::move(ll);
+    folder = ff;
+  }
+} AsyncDataPair;
 
 #ifdef __linux__ 
 const char kDirSeparators[] = "/";

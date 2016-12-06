@@ -2,33 +2,45 @@
 #include "Utils.h"
 #include "glob.h"
 
-jsonxx::Array JsonAdapter::PrepareJson(People& people) {
-  jsonxx::Array result;
+jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
+  jsonxx::Array directory;
 
-  for (Head man:people) {
-    jsonxx::Object face;
-    face << "file_name" << man.file_name_;
-    face << "face" << man.face_.x << man.face_.y;
-    for (auto mouth:man.mouths_) {
-      face << "mouth" << mouth.x << mouth.y;
+  auto save_rect = [](const std::string& name, cv::Rect xy)-> jsonxx::Object{
+    jsonxx::Object up_struct;
+    up_struct << name;
+    jsonxx::Object down_struct;
+    down_struct << "x" << xy.x;
+    down_struct << "y" << xy.y;
+    up_struct << down_struct;
+    return up_struct;
+  };
+
+  for(const AsyncData& ll:people) {
+    for (const Head& man:ll->data) {
+      jsonxx::Object file;
+      file << "file_name" << man.file_name_;
+      file << save_rect("face", man.face_);
+      for (auto mouth:man.mouths_) {
+        file << save_rect("mouth", mouth);
+      }
+      for (auto eye:man.eyes_) {
+        file << save_rect("eye", eye);
+      }
+      directory << file;
     }
-    for (auto eye:man.eyes_) {
-      face << "eyes" << eye.x << eye.y;
-    }
-    result << face;
   }
-  return result;
+  return directory;
 }
 
 
-  bool JsonAdapter::SaveJson(People& people, const std::string& path) {
-  std::ofstream output_file(FilesystemHelper::ExtractPath(path) + "result.json");
+  bool JsonAdapter::SaveJson(const AsyncDataPair& data) {
+  std::ofstream output_file(FilesystemHelper::ExtractPath(data.folder) + "result.json");
 
   if (!output_file) {
     return false;
   }
 
-  jsonxx::Array json = PrepareJson(people);
+  jsonxx::Array json = PrepareJson(data.people_from_folder);
 
   output_file << json.write(jsonxx::JSON);
 
@@ -71,5 +83,17 @@ jsonxx::Array JsonAdapter::PrepareJson(People& people) {
   }
 
   bool comparator(const Head& lhs, const Head& rhs) {
+    if (0 <= lhs.file_name_.compare(rhs.file_name_)) {
+      return true;
+    }
+
+    if (lhs.face_.size().height > rhs.face_.size().height) {
+      return true;
+    }
+
+    if (lhs.face_.size().width > rhs.face_.size().width) {
+      return true;
+    }
+
     return true;
   }

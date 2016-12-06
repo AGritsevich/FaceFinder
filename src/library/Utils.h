@@ -9,10 +9,10 @@
 
 class JsonAdapter {
 private:
-  static jsonxx::Array PrepareJson(People& people);
+  static jsonxx::Array PrepareJson(const AsyncDataList& people);
 
 public:
-  static bool SaveJson(People& people, const std::string& path);
+  static bool SaveJson(const AsyncDataPair& data);
 };
 
 class FilesystemHelper {
