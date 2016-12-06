@@ -291,5 +291,5 @@ void glob(std::string pattern, std::vector<std::string>& result, bool recursive)
     }
 
     glob_rec(path, wildchart, result, recursive);
-    std::sort(result.begin(), result.end());
+    //std::sort(result.begin(), result.end());
 }
