@@ -22,7 +22,7 @@ jsonxx::Array JsonAdapter::PrepareJson(People& people) {
 
 
   bool JsonAdapter::SaveJson(People& people, const std::string& path) {
-  std::ofstream output_file(path + "result.json");
+  std::ofstream output_file(FilesystemHelper::ExtractPath(path) + "result.json");
 
   if (!output_file) {
     return false;
