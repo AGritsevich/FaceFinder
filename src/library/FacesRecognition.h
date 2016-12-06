@@ -9,6 +9,7 @@
 class FacesRecognition {
 public:
   FacesRecognition();
+  bool Init();
   People ThreadFacade(const std::string& path);
 
 private:
@@ -16,11 +17,11 @@ private:
   void SaveFace(const cv::Mat src_img, const cv::Rect face, const std::string& path, const uint16_t n);
   People CollectPeople(const std::string& image_path);
   void Notify(const size_t count, const std::string path);
-
+ 
 private:
-  const std::string face_cascade_name;
-  const std::string eyes_cascade_name;
-  const std::string mouth_cascafe_name;
+  cv::FileStorage fs_face_cascade_cliche_;
+  cv::FileStorage fs_eyes_cascade_cliche_;
+  cv::FileStorage fs_mouth_cascade_cliche_;
 };
 
 #endif // SRC_LIBRARY_FACESRECOGNITION_H

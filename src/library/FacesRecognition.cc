@@ -12,10 +12,27 @@
  
 
 FacesRecognition::FacesRecognition() :
-  face_cascade_name("haarcascade_frontalface_alt.xml"),
-  eyes_cascade_name("haarcascade_eye_tree_eyeglasses.xml"),
-  mouth_cascafe_name("haarcascade_mcs_mouth.xml") {}
+  fs_face_cascade_cliche_("haarcascade_frontalface_alt.xml", cv::FileStorage::READ),
+  fs_eyes_cascade_cliche_("haarcascade_eye_tree_eyeglasses.xml", cv::FileStorage::READ),
+  fs_mouth_cascade_cliche_("haarcascade_mcs_mouth.xml", cv::FileStorage::READ) {}
 
+bool FacesRecognition::Init() {
+  bool retVal = true;
+  //-- 1. Load the cascades
+  if( !fs_face_cascade_cliche_.isOpened() ){ 
+    std::cout << "--(!)Error loading face cascade\n";
+    retVal = false;
+  };
+  if( !fs_eyes_cascade_cliche_.isOpened() ){ 
+    std::cout << "--(!)Error loading eyes cascade\n";
+    retVal = false;
+  };
+  if( !fs_mouth_cascade_cliche_.isOpened() ){ 
+    std::cout << "--(!)Error loading mouth cascade\n";
+    retVal = false;
+  };
+  return retVal;
+}
 People FacesRecognition::ThreadFacade(const std::string& path) {
   People people = CollectPeople(path);
 
@@ -44,14 +61,8 @@ cv::Mat FacesRecognition::Reflect( const cv::Mat& src ) {
 
   for( int j = 0; j < src.rows; j++ ) {
     for( int i = 0; i < src.cols; i++ ) {
-      //map_x.at<float>(j,i) = (float)i ;
-      //map_y.at<float>(j,i) = (float)(src.rows - j) ;
-
       map_x.at<float>(j,i) = (float)(src.cols - i) ;
       map_y.at<float>(j,i) = (float)j ;
-
-      //map_x.at<float>(j,i) = (float)(src.cols - i) ;
-      //map_y.at<float>(j,i) = (float)(src.rows - j) ;
     }
   }
 
@@ -71,28 +82,20 @@ void FacesRecognition::SaveFace(const cv::Mat src_img, const cv::Rect face, cons
 People FacesRecognition::CollectPeople(const std::string& image_path) {
   using namespace cv;
 
+  //-- 1. Load the cascades
   cv::CascadeClassifier face_cascade;
   cv::CascadeClassifier eyes_cascade;
   cv::CascadeClassifier mouth_cascade;
-
-  //-- 1. Load the cascades
-  if( !face_cascade.load( face_cascade_name ) ){ 
-    std::cout << "--(!)Error loading face cascade\n";
-    return People();
-  };
-  if( !eyes_cascade.load( eyes_cascade_name ) ){ 
-    std::cout << "--(!)Error loading eyes cascade\n";
-    return People();
-  };
-  if( !mouth_cascade.load( mouth_cascafe_name ) ){ 
-    std::cout << "--(!)Error loading mouth cascade\n";
-    return People();
-  };
   
+  face_cascade.read( fs_face_cascade_cliche_.getFirstTopLevelNode());
+  eyes_cascade.read( fs_eyes_cascade_cliche_.getFirstTopLevelNode());
+  mouth_cascade.read( fs_mouth_cascade_cliche_.getFirstTopLevelNode());
+
   std::ofstream check_file;
   check_file.open (image_path, std::ios::binary| std::ios::in);
   if (!check_file.good()) {
-    std::cout <<  "Could not open or find the image: " << image_path << std::endl ;
+    std::cout <<  "Could not open or find the image: " << image_path << std::endl;
+    return People();
   }
   check_file.close();
 
