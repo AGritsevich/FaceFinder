@@ -61,9 +61,9 @@ enum Format {
 };
 
 // Types
-typedef long double Number;
-typedef bool Boolean;
-typedef std::string String;
+using Number long double;
+using Boolean = bool;
+using String = td::string;
 struct Null {};
 class Value;
 class Object;
@@ -72,7 +72,7 @@ class Array;
 // Identity meta-function
 template <typename T>
 struct identity {
-  typedef T type;
+  using type = T;
 };
 
 // Tools
@@ -116,7 +116,7 @@ class Object {
   void reset();
   bool parse(std::istream &input);
   bool parse(const std::string &input);
-  typedef std::map<std::string, Value*> container;
+  using container = std::map<std::string, Value*>;
   void import( const Object &other );
   void import( const std::string &key, const Value &value );
   Object &operator<<(const Value &value);
@@ -166,7 +166,7 @@ class Array {
   void reset();
   bool parse(std::istream &input);
   bool parse(const std::string &input);
-  typedef std::vector<Value*> container;
+  using  container = std::vector<Value*>;
   void import(const Array &other);
   void import(const Value &value);
   Array &operator<<(const Array &other);

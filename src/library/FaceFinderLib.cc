@@ -4,7 +4,7 @@
 #include "Utils.h"
 #include "defines.h"
 
-void Find_faces_in_folder( std::string root_folder, const uint16_t nThreads) {
+void Find_faces_in_folder( const char* root_folder, const uint32_t nThreads) {
   FacesRecognition recognator;
 
   if (!recognator.Init()) {

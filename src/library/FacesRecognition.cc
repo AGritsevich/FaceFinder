@@ -1,4 +1,4 @@
-
+  
 #include "FacesRecognition.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
@@ -12,22 +12,22 @@
  
 
 FacesRecognition::FacesRecognition() :
-  fs_face_cascade_cliche_("haarcascade_frontalface_alt.xml", cv::FileStorage::READ),
-  fs_eyes_cascade_cliche_("haarcascade_eye_tree_eyeglasses.xml", cv::FileStorage::READ),
-  fs_mouth_cascade_cliche_("haarcascade_mcs_mouth.xml", cv::FileStorage::READ) {}
+  m_fs_face_cascade_cliche("haarcascade_frontalface_alt.xml", cv::FileStorage::READ),
+  m_fs_eyes_cascade_cliche("haarcascade_eye_tree_eyeglasses.xml", cv::FileStorage::READ),
+  m_fs_mouth_cascade_cliche("haarcascade_mcs_mouth.xml", cv::FileStorage::READ) {}
 
 bool FacesRecognition::Init() {
   bool retVal = true;
   //-- 1. Load the cascades
-  if( !fs_face_cascade_cliche_.isOpened() ){ 
+  if( !m_fs_face_cascade_cliche.isOpened() ){ 
     std::cout << "--(!)Error loading face cascade\n";
     retVal = false;
   };
-  if( !fs_eyes_cascade_cliche_.isOpened() ){ 
+  if( !m_fs_eyes_cascade_cliche.isOpened() ){ 
     std::cout << "--(!)Error loading eyes cascade\n";
     retVal = false;
   };
-  if( !fs_mouth_cascade_cliche_.isOpened() ){ 
+  if( !m_fs_mouth_cascade_cliche.isOpened() ){ 
     std::cout << "--(!)Error loading mouth cascade\n";
     retVal = false;
   };
@@ -87,9 +87,9 @@ People FacesRecognition::CollectPeople(const std::string& image_path) {
   cv::CascadeClassifier eyes_cascade;
   cv::CascadeClassifier mouth_cascade;
   
-  face_cascade.read( fs_face_cascade_cliche_.getFirstTopLevelNode());
-  eyes_cascade.read( fs_eyes_cascade_cliche_.getFirstTopLevelNode());
-  mouth_cascade.read( fs_mouth_cascade_cliche_.getFirstTopLevelNode());
+  face_cascade.read( m_fs_face_cascade_cliche.getFirstTopLevelNode());
+  eyes_cascade.read( m_fs_eyes_cascade_cliche.getFirstTopLevelNode());
+  mouth_cascade.read( m_fs_mouth_cascade_cliche.getFirstTopLevelNode());
 
   std::ofstream check_file;
   check_file.open (image_path, std::ios::binary| std::ios::in);

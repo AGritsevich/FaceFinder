@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <stdint.h>
+#include <memory>
 #include "src/library/FaceFinderLib.h"
 
 #ifdef __linux__ 
@@ -15,18 +16,19 @@ public:
   virtual bool Open(std::string lib_path) =0;
   virtual bool Close() =0;
   virtual IMGPROCDLL LibraryFunction(std::string name) =0;
+  virtual ~DynamicLibraryConnector(){};
 };
 
 #ifdef __linux__ 
 class DynamicLibraryConnectorLinux : public DynamicLibraryConnector {
   DynamicLibraryConnectorLinux() :
-    hinstLib_(nullptr) {};
+    m_hinstLib(nullptr) {};
   virtual ~DynamicLibraryConnectorLinux(){Close();};
 
   IMGPROCDLL LibraryFunction(std::string name) override {
     IMGPROCDLL funptr; 
-    if (hinstLib_ != NULL) { 
-      funptr = dlsym(hinstLib_, name.c_str());
+    if (m_hinstLib != NULL) { 
+      funptr = dlsym(m_hinstLib, name.c_str());
       char error* = nullptr;
       if ((error = dlerror()) != NULL) {
         std::cout << "--Error! " << dlerror() << std::endl;
@@ -38,9 +40,9 @@ class DynamicLibraryConnectorLinux : public DynamicLibraryConnector {
   }
 
   bool Open(std::string lib_path) override {
-    hinstLib_ = dlopen(lib_path.c_str(), RTLD_LAZY);
+    m_hinstLib = dlopen(lib_path.c_str(), RTLD_LAZY);
 
-    if (!hinstLib_) {
+    if (!m_hinstLib) {
       std::cout << "--Error! " << dlerror() << std::endl;
       return false;
     }
@@ -48,25 +50,25 @@ class DynamicLibraryConnectorLinux : public DynamicLibraryConnector {
   }
 
   bool Close() {
-    bool retVal = (0 == dlclose(hinstLib_);
-    hinstLib_ = nullptr;
+    bool retVal = (0 == dlclose(m_hinstLib);
+    m_hinstLib = nullptr;
     return retVal; 
   }
 
 private:
-  void *hinstLib_;
+  void *m_hinstLib;
 };
 #else // WIN32
 class DynamicLibraryConnectorWindows : public DynamicLibraryConnector {
 public:
   DynamicLibraryConnectorWindows():
-    hinstLib_(nullptr) {};
+    m_hinstLib(nullptr) {};
   virtual ~DynamicLibraryConnectorWindows(){Close();};
 
   IMGPROCDLL LibraryFunction(std::string name) override {
     IMGPROCDLL ProcAdd; 
-    if (hinstLib_ != NULL) { 
-      ProcAdd = (IMGPROCDLL) GetProcAddress(hinstLib_, name.c_str()); 
+    if (m_hinstLib != NULL) { 
+      ProcAdd = (IMGPROCDLL) GetProcAddress(m_hinstLib, name.c_str()); 
 
       if (NULL != ProcAdd) {
         //(ProcAdd) (L"Message sent to the DLL function\n"); 
@@ -77,9 +79,9 @@ public:
   }
 
   bool Open(std::string lib_path) override {
-    hinstLib_ = LoadLibrary(TEXT(lib_path.c_str())); 
+    m_hinstLib = LoadLibrary(lib_path.c_str()); 
 
-    if (hinstLib_ == NULL) {
+    if (m_hinstLib == NULL) {
       DWORD   dwLastError = ::GetLastError();
       TCHAR   lpBuffer[256] = {0};
       if(dwLastError != 0)    // Don't want to see a "operation done successfully" error ;-)
@@ -99,13 +101,13 @@ public:
   }
 
   bool Close() {
-    bool retVal = (TRUE == FreeLibrary(hinstLib_));
-    hinstLib_ = nullptr;
+    bool retVal = (TRUE == FreeLibrary(m_hinstLib));
+    m_hinstLib = nullptr;
     return retVal; 
   }
 
 private:
-  HINSTANCE hinstLib_;
+  HINSTANCE m_hinstLib;
 };
 #endif // WIN32
 
@@ -117,9 +119,9 @@ int main(int argc, char** argv) {
                                   folder_with_images - obligatory parameter\n \
                                   count_of_threads - optional, by default is 1";
 
-  std::string first_param; // mandatory
-  uint32_t second_param = 1; //optional - default
-
+  std::string root_path; // mandatory
+  uint32_t count_of_threads = 1u; //optional - default
+  uint32_t kMaxThreadCount = 256u;
   switch(argc) {
   case 0:
   case 1:
@@ -127,28 +129,28 @@ int main(int argc, char** argv) {
     std::cout << kHelpMessage << std::endl;
     return retVal;
   case 3:
-    second_param = std::atoi(argv[2]);
+    count_of_threads = std::min(std::atoi(argv[2]), kMaxThreadCount);
   case 2:
-    first_param = argv[1];
+    root_path = argv[1];
     break;
   }
 
-  if(0 == first_param.compare("help")) {
+  if(0 == root_path.compare("help")) {
     std::cout << kHelpMessage << std::endl;
     return retVal;
   }
 
-  DynamicLibraryConnector* connector = nullptr;
+  std::unique_ptr<DynamicLibraryConnector> connector = nullptr;
 #ifdef __linux__ 
-  connector = new DynamicLibraryConnectorLinux();
+  connector.reset(new DynamicLibraryConnectorLinux());
 #else // WIN32
-  connector = new DynamicLibraryConnectorWindows();
+  connector.reset(new DynamicLibraryConnectorWindows());
 #endif
 
   if (connector->Open(kLibName)) {
     IMGPROCDLL processor = connector->LibraryFunction(kFunName);
     if (processor) {
-      (processor)(first_param, second_param);
+      (processor)(root_path, count_of_threads);
       retVal = 0;
     } else {
       std::cout << "--Error! Cannot find function in library! Function " << kFunName;
@@ -158,8 +160,6 @@ int main(int argc, char** argv) {
     std::cout << "--Error! Cannot open library! Library " << kLibName;
     retVal = 1;
   }
-
-  delete connector;
 
   return retVal;
 }
