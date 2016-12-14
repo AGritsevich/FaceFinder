@@ -1,5 +1,6 @@
 # TestTaskRegula
 
-Please be infrom that this solution was create in short terms.
+Please be infrom that this solution was create in short terms. 
 
-So, it's wasn't build and test under any OS Linux.
+Build  
+For build it need install OpenCV and configure global path to OpenCV build directory "OPENCV_DIR".
