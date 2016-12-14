@@ -510,7 +510,7 @@ std::ostream& operator<<(std::ostream& stream, const jsonxx::Object& v) {
 namespace jsonxx {
 namespace {
 
-typedef unsigned char byte;
+using byte = unsigned char;
 
 //template<bool quote>
 std::string escape_string( const std::string &input, const bool quote = false ) {

@@ -14,37 +14,32 @@ struct AData {
   _T data;
 };
 
-typedef cv::Rect Face;
-// Support not only mankind :)
-typedef std::vector<cv::Rect> Mouths;
-typedef std::vector<cv::Rect> Eyes;
-
-typedef struct {
-  Face face_;
-  Eyes eyes_;
-  Mouths mouths_;
+struct Head{
+  cv::Rect face_;
+  std::vector<cv::Rect> eyes_;
+  std::vector<cv::Rect> mouths_;
   std::string file_name_;
-}Head;
+};
 
-typedef std::vector<Head> People;
+using People = std::vector<Head>;
 
-typedef std::shared_ptr<AData<People>> AsyncData;
-typedef std::deque<AsyncData> AsyncDataList;
-typedef struct _AsyncDataPair{
+using AsyncData = std::shared_ptr<AData<People>>;
+using AsyncDataList = std::deque<AsyncData>;
+struct AsyncDataPair{
   AsyncDataList people_from_folder; 
   std::string folder;
-  _AsyncDataPair(AsyncDataList ll, std::string ff) {
+  AsyncDataPair(AsyncDataList ll, std::string ff) {
     people_from_folder = std::move(ll);
     folder = ff;
   }
-} AsyncDataPair;
+};
 
 #ifdef __linux__ 
 const char kDirSeparators[] = "/";
-#else // Unix
+#else // Windows
 const char kDirSeparators[] = "\\";
 #endif
 
-typedef std::vector<std::string> ImagesPathes;
+using ImagesPathes = std::vector<std::string>;
 
 #endif SRC_LIBRARY_DEFINES_H
