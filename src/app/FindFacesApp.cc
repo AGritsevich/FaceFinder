@@ -2,42 +2,31 @@
 #include <string>
 #include <stdint.h>
 #include <memory>
+#include <algorithm>
 #include "src/library/FaceFinderLib.h"
 
 #ifdef __linux__ 
+#include <stdio.h>
+#include <stdlib.h>
 #include <dlfcn.h>
 #else // WIN32
-
-#endif
 #include <windows.h>
+#endif
 
 class DynamicLibraryConnector {
 public:
   virtual bool Open(std::string lib_path) =0;
   virtual bool Close() =0;
   virtual IMGPROCDLL LibraryFunction(std::string name) =0;
-  virtual ~DynamicLibraryConnector(){};
+  virtual ~DynamicLibraryConnector(){}
 };
 
 #ifdef __linux__ 
 class DynamicLibraryConnectorLinux : public DynamicLibraryConnector {
+public:
   DynamicLibraryConnectorLinux() :
-    m_hinstLib(nullptr) {};
-  virtual ~DynamicLibraryConnectorLinux(){Close();};
-
-  IMGPROCDLL LibraryFunction(std::string name) override {
-    IMGPROCDLL funptr; 
-    if (m_hinstLib != NULL) { 
-      funptr = dlsym(m_hinstLib, name.c_str());
-      char error* = nullptr;
-      if ((error = dlerror()) != NULL) {
-        std::cout << "--Error! " << dlerror() << std::endl;
-        return nullptr;
-      } 
-      return ProcAdd;
-    } 
-    return nullptr;
-  }
+    m_hinstLib(nullptr) {}
+  virtual ~DynamicLibraryConnectorLinux(){Close();}
 
   bool Open(std::string lib_path) override {
     m_hinstLib = dlopen(lib_path.c_str(), RTLD_LAZY);
@@ -49,8 +38,23 @@ class DynamicLibraryConnectorLinux : public DynamicLibraryConnector {
     return true;
   }
 
+  IMGPROCDLL LibraryFunction(std::string name) override {
+    IMGPROCDLL funptr; 
+    if (m_hinstLib != NULL) { 
+      void* void_ptr = (dlsym(m_hinstLib, name.c_str()));
+      funptr = reinterpret_cast<IMGPROCDLL>(reinterpret_cast<long>(void_ptr));
+      char *error = nullptr;
+      if ((error = dlerror()) != NULL) {
+        std::cout << "--Error! " << dlerror() << std::endl;
+        return nullptr;
+      } 
+      return funptr;
+    } 
+    return nullptr;
+  }
+
   bool Close() {
-    bool retVal = (0 == dlclose(m_hinstLib);
+    bool retVal = (0 == dlclose(m_hinstLib));
     m_hinstLib = nullptr;
     return retVal; 
   }
@@ -121,7 +125,7 @@ int main(int argc, char** argv) {
 
   std::string root_path; // mandatory
   uint32_t count_of_threads = 1u; //optional - default
-  uint32_t kMaxThreadCount = 256u;
+  const uint64_t kMaxThreadCount = 256u;
   switch(argc) {
   case 0:
   case 1:
@@ -129,7 +133,7 @@ int main(int argc, char** argv) {
     std::cout << kHelpMessage << std::endl;
     return retVal;
   case 3:
-    count_of_threads = std::min(std::atoi(argv[2]), kMaxThreadCount);
+    count_of_threads = std::min(std::stoul(argv[2]), kMaxThreadCount);
   case 2:
     root_path = argv[1];
     break;
@@ -150,7 +154,7 @@ int main(int argc, char** argv) {
   if (connector->Open(kLibName)) {
     IMGPROCDLL processor = connector->LibraryFunction(kFunName);
     if (processor) {
-      (processor)(root_path, count_of_threads);
+      (processor)(root_path.c_str(), count_of_threads);
       retVal = 0;
     } else {
       std::cout << "--Error! Cannot find function in library! Function " << kFunName;

@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <iostream>
 #include "Utils.h"
-#include <windows.h>
  
 
 FacesRecognition::FacesRecognition() :

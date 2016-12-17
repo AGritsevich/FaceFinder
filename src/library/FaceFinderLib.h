@@ -23,7 +23,7 @@ const char kFunName[] = "Find_faces_in_folder";
 #ifdef __cplusplus    // If used by C++ code, 
  extern "C" {          // we need to export the C interface
 #endif // __cpluspluso
-  using  IMGPROCDLL = void (__cdecl *)( const char*, const uint32_t);
+  using  IMGPROCDLL = void (_C_ *)( const char*, const uint32_t);
 
   DLL_EXP void _C_ Find_faces_in_folder( const char*, const uint32_t nThreads );
 
