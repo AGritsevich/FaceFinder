@@ -3,10 +3,17 @@
 This project contains library and app that dynamicly connect to application.
 Application just validate input parameters and proxy connection to library for different OSes
 
+<<<<<<< HEAD
 Library recursively search image files image files in root directory.
 Than in multi threaded mode processing all image for faces.
 Faces cutting from parent image and save near with parent file.
 For one folder it creates result.json that contain X & Y coordinate in parent image for face, eyes, mouth.
+=======
+Library recursevely search image files image files in root directory.
+Than in multi threaded mode processing all image for faces.
+Faces cutting from parent image and save near with parent file.
+For one folder it creates result.json that contain X & Y coordinate in parant image for face, eyes, mouth.
+>>>>>>> 7fd010b... Add Clone Build run units
 
 Project uses:
 - OpenCV like submodule
