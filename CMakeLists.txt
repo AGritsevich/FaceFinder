@@ -16,9 +16,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "")
 endif(CMAKE_BUILD_TYPE STREQUAL "")
 message(STATUS "BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
 
-if(NOT EXIST ${CMAKE_SOURCE_DIR}/bin/)
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/bin/)
     make_directory(${CMAKE_SOURCE_DIR}/bin/)
- endif(${CMAKE_SOURCE_DIR}/bin/)
+ endif(NOT EXISTS ${CMAKE_SOURCE_DIR}/bin/)
 
 if((NOT EXISTS ${OPENCV_BUILD_DIR}))
     message(STATUS "Build opencv")
@@ -28,7 +28,7 @@ if((NOT EXISTS ${OPENCV_BUILD_DIR}))
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/
     )
     #TODO rebuild opencv if change Debug/Release
-    execute_process(COMMAND make -j WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/ )
+    execute_process(COMMAND make -j5 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/ )
     execute_process(COMMAND make install WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/ )
     file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/opencv/)
 endif()
