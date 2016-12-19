@@ -1,5 +1,5 @@
-#ifndef SRC_LIBRARY_FACESRECOGNITION_H
-#define SRC_LIBRARY_FACESRECOGNITION_H
+#ifndef SRC_LIBRARY_INCLUDE_FACESRECOGNITION_H
+#define SRC_LIBRARY_INCLUDE_FACESRECOGNITION_H
 
 #include <opencv2/objdetect/objdetect.hpp>
 #include <string>
@@ -9,7 +9,6 @@
 class FacesRecognition {
 public:
   FacesRecognition();
-  bool Init();
   People ThreadFacade(const std::string& path);
 
 private:
@@ -19,9 +18,9 @@ private:
   void Notify(const size_t count, const std::string path) const;
  
 private:
-  cv::FileStorage m_fs_face_cascade_cliche;
-  cv::FileStorage m_fs_eyes_cascade_cliche;
-  cv::FileStorage m_fs_mouth_cascade_cliche;
+  //cv::FileStorage m_fs_face_cascade_cliche;
+  //cv::FileStorage m_fs_eyes_cascade_cliche;
+  //cv::FileStorage m_fs_mouth_cascade_cliche;
 };
 
-#endif // SRC_LIBRARY_FACESRECOGNITION_H
+#endif // SRC_LIBRARY_INCLUDE_FACESRECOGNITION_H

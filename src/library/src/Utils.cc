@@ -1,6 +1,6 @@
 
 #include "Utils.h"
-#include "glob.h"
+#include <opencv2/core/utility.hpp>
 
 jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
   jsonxx::Array directory;
@@ -71,15 +71,14 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
     return path;
   }
 
-  ImagesPathes FilesystemHelper::GetAllImagesInFolder(std::string& path) {
-    ImagesPathes imgs;
-    if (path.at(path.size() - 1) != kDirSeparators[0]) {
+  void FilesystemHelper::GetAllImagesInFolder(const char* root_path, std::vector<cv::String>& imgs) {
+    std::string path(root_path);
+      if (path.at(path.size() - 1) != kDirSeparators[0]) {
       path += kDirSeparators;
     }
 
-    glob(path + "*.*", imgs, true); // true - recursive
+    cv::glob(path + "*.*", imgs, true); // true - recursive
     // return sorted strings
-    return imgs;
   }
 
   bool comparator(const Head& lhs, const Head& rhs) {

@@ -1,5 +1,5 @@
-#ifndef SRC_LIBRARY_FACEFINDERLIB_H
-#define SRC_LIBRARY_FACEFINDERLIB_H
+#ifndef SRC_LIBRARY_INCLUDE_FACEFINDERLIB_H
+#define SRC_LIBRARY_INCLUDE_FACEFINDERLIB_H
 
 #include <stdint.h>
 #include <string>
@@ -7,14 +7,13 @@
 #ifdef __linux__ 
 #define DLL_EXP
 #define _C_
-const char kLibName[] = "FindFaces.so";
+const char kLibName[] = "/home/anton/Work/FaceFinder/bin/libEngine.so";
 #else // WIN32
 #define DLL_EXP __declspec(dllexport)
 #define _C_ __cdecl
 #ifdef _DEBUG
-const char kLibName[] = "d:\\Work\\TestTaskRegula\\buildx64\\src\\library\\Debug\\FindFaces.dll";
 #else
-const char kLibName[] = "FindFaces.dll";
+const char kLibName[] = "Engine.dll";
 #endif // _DEBUG
 #endif // WIN32
 
@@ -31,5 +30,5 @@ const char kFunName[] = "Find_faces_in_folder";
  }
 #endif // __cplusplus
 
-#endif // SRC_LIBRARY_FACEFINDERLIB_H
+#endif // SRC_LIBRARY_INCLUDE_FACEFINDERLIB_H
 

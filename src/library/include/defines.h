@@ -1,5 +1,5 @@
-#ifndef SRC_LIBRARY_DEFINES_H
-#define SRC_LIBRARY_DEFINES_H
+#ifndef SRC_LIBRARY_INCLUDE_DEFINES_H
+#define SRC_LIBRARY_INCLUDE_DEFINES_H
 
 #include <opencv2/core/core.hpp>
 #include <vector>
@@ -40,6 +40,4 @@ const char kDirSeparators[] = "/";
 const char kDirSeparators[] = "\\";
 #endif
 
-using ImagesPathes = std::vector<std::string>;
-
-#endif SRC_LIBRARY_DEFINES_H
+#endif // SRC_LIBRARY_INCLUDE_DEFINES_H

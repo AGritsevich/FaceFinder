@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <memory>
 #include <algorithm>
-#include "src/library/FaceFinderLib.h"
+#include "FaceFinderLib.h"
 
 #ifdef __linux__ 
 #include <stdio.h>
@@ -15,9 +15,9 @@
 
 class DynamicLibraryConnector {
 public:
-  virtual bool Open(std::string lib_path) =0;
+  virtual bool Open(const char* lib_path) =0;
   virtual bool Close() =0;
-  virtual IMGPROCDLL LibraryFunction(std::string name) =0;
+  virtual IMGPROCDLL LibraryFunction(const char* name) =0;
   virtual ~DynamicLibraryConnector(){}
 };
 
@@ -28,8 +28,8 @@ public:
     m_hinstLib(nullptr) {}
   virtual ~DynamicLibraryConnectorLinux(){Close();}
 
-  bool Open(std::string lib_path) override {
-    m_hinstLib = dlopen(lib_path.c_str(), RTLD_LAZY);
+  bool Open(const char* lib_path) override {
+    m_hinstLib = dlopen(lib_path, RTLD_LAZY);
 
     if (!m_hinstLib) {
       std::cout << "--Error! " << dlerror() << std::endl;
@@ -38,10 +38,10 @@ public:
     return true;
   }
 
-  IMGPROCDLL LibraryFunction(std::string name) override {
+  IMGPROCDLL LibraryFunction(const char* name) override {
     IMGPROCDLL funptr; 
     if (m_hinstLib != NULL) { 
-      void* void_ptr = (dlsym(m_hinstLib, name.c_str()));
+      void* void_ptr = (dlsym(m_hinstLib, name));
       funptr = reinterpret_cast<IMGPROCDLL>(reinterpret_cast<long>(void_ptr));
       char *error = nullptr;
       if ((error = dlerror()) != NULL) {
@@ -54,8 +54,11 @@ public:
   }
 
   bool Close() {
-    bool retVal = (0 == dlclose(m_hinstLib));
-    m_hinstLib = nullptr;
+    bool retVal = false;
+    if (m_hinstLib) {
+        retVal = (0 == dlclose(m_hinstLib));
+        m_hinstLib = nullptr;
+    }
     return retVal; 
   }
 
@@ -69,21 +72,20 @@ public:
     m_hinstLib(nullptr) {};
   virtual ~DynamicLibraryConnectorWindows(){Close();};
 
-  IMGPROCDLL LibraryFunction(std::string name) override {
+  IMGPROCDLL LibraryFunction(const char* name) override {
     IMGPROCDLL ProcAdd; 
     if (m_hinstLib != NULL) { 
-      ProcAdd = (IMGPROCDLL) GetProcAddress(m_hinstLib, name.c_str()); 
+      ProcAdd = (IMGPROCDLL) GetProcAddress(m_hinstLib, name);
 
       if (NULL != ProcAdd) {
-        //(ProcAdd) (L"Message sent to the DLL function\n"); 
         return ProcAdd;
       }
     } 
     return nullptr;
   }
 
-  bool Open(std::string lib_path) override {
-    m_hinstLib = LoadLibrary(lib_path.c_str()); 
+  bool Open(const char* lib_path) override {
+    m_hinstLib = LoadLibrary(lib_path);
 
     if (m_hinstLib == NULL) {
       DWORD   dwLastError = ::GetLastError();
@@ -105,8 +107,11 @@ public:
   }
 
   bool Close() {
-    bool retVal = (TRUE == FreeLibrary(m_hinstLib));
-    m_hinstLib = nullptr;
+    bool retVal = false;
+    if (m_hinstLib) {
+        (TRUE == FreeLibrary(m_hinstLib));
+        m_hinstLib = nullptr;
+    }
     return retVal; 
   }
 
@@ -117,11 +122,11 @@ private:
 
 int main(int argc, char** argv) {
   int retVal = 1;
-  const std::string kHelpMessage = "Face detections program.\n  \
-                                findface help - show this help message\n \
-                                findface [folder_with_images] [count_of_threads]\n \
-                                  folder_with_images - obligatory parameter\n \
-                                  count_of_threads - optional, by default is 1";
+  const std::string kHelpMessage = "Face detections program.\n"
+                               " findface help - show this help message\n"
+                               " findface [folder_with_images] [count_of_threads]\n"
+                                 " folder_with_images - obligatory parameter\n"
+                                 " count_of_threads - optional, by default is 1";
 
   std::string root_path; // mandatory
   uint32_t count_of_threads = 1u; //optional - default

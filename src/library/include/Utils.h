@@ -1,5 +1,5 @@
-#ifndef SRC_LIBRARY_SAVEDATA_H
-#define SRC_LIBRARY_SAVEDATA_H
+#ifndef SRC_LIBRARY_INCLUDE_SAVEDATA_H
+#define SRC_LIBRARY_INCLUDE_SAVEDATA_H
 
 #include <fstream>
 #include <string>
@@ -19,9 +19,9 @@ class FilesystemHelper {
 public:
   static std::string ExtractFileName(std::string full_path);
   static std::string ExtractPath(std::string full_path);
-  static ImagesPathes GetAllImagesInFolder(std::string& path);
+  static void GetAllImagesInFolder(const char *root_path, std::vector<cv::String> &imgs);
 };
 
 bool comparator(const Head& lhs, const Head& rhs);
 
-#endif // SRC_LIBRARY_SAVEDATA_H
+#endif // SRC_LIBRARY_INCLUDE_SAVEDATA_H
