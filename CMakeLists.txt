@@ -11,10 +11,14 @@ if((NOT OPENCV_SUBMODULE_DIR) OR (NOT EXISTS ${OPENCV_SUBMODULE_DIR}/include/))
     execute_process(COMMAND git submodule update --init)
 endif()
 
-IF(CMAKE_BUILD_TYPE STREQUAL "")
+if(CMAKE_BUILD_TYPE STREQUAL "")
     set(CMAKE_BUILD_TYPE Release)
 endif(CMAKE_BUILD_TYPE STREQUAL "")
 message(STATUS "BUILD_TYPE: " ${CMAKE_BUILD_TYPE})
+
+if(NOT EXIST ${CMAKE_SOURCE_DIR}/bin/)
+    make_directory(${CMAKE_SOURCE_DIR}/bin/)
+ endif(${CMAKE_SOURCE_DIR}/bin/)
 
 if((NOT EXISTS ${OPENCV_BUILD_DIR}))
     message(STATUS "Build opencv")

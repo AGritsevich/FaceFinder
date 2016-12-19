@@ -11,7 +11,7 @@ file( GLOB SRC *.cc *.h)
 
 add_executable(${APP_NAME} ${SRC})
 set_target_properties(${APP_NAME} PROPERTIES
-                      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+                      RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/
 )
 target_include_directories(${APP_NAME} PUBLIC ${HEADERS})
 
