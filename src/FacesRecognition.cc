@@ -38,7 +38,7 @@ People FacesRecognition::ThreadFacade(const std::string& path) {
   return people;
 }
 
-void FacesRecognition::Notify(const size_t count, const std::string path) const {
+void FacesRecognition::Notify(const size_t count, const std::string& path) const {
   // print result
   std::cout << "Image processed, faces: " 
     << count
@@ -68,7 +68,7 @@ cv::Mat FacesRecognition::Reflect( const cv::Mat& src ) {
   return dst;
 }
 
-void FacesRecognition::SaveFace(const cv::Mat src_img, const cv::Rect face, const std::string& path, const uint16_t n) {
+void FacesRecognition::SaveFace(const cv::Mat& src_img, const cv::Rect& face, const std::string& path, const uint16_t n) {
   // Save face
   std::string file_name = path.substr(0, path.size() - 4) + "_face_#" + std::to_string(n) + ".jpg";
   cv::Mat corp(src_img, face); // Copy?

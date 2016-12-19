@@ -5,7 +5,7 @@
 jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
   jsonxx::Array directory;
 
-  auto save_rect = [](const std::string& name, cv::Rect xy)-> jsonxx::Object{
+  auto save_rect = [](const std::string& name, const cv::Rect& xy)-> jsonxx::Object{
     jsonxx::Object up_struct;
     up_struct << name;
     jsonxx::Object down_struct;
@@ -60,7 +60,7 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
     return file_name;
   }
 
-  std::string FilesystemHelper::ExtractPath(std::string& full_path) {
+  std::string FilesystemHelper::ExtractPath(const std::string& full_path) {
     std::string path;
     size_t pos = full_path.find_last_of(kDirSeparators);
     if (pos == std::string::npos) {// it's file name
