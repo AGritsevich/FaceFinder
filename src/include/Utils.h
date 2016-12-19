@@ -17,11 +17,9 @@ public:
 
 class FilesystemHelper {
 public:
-  static std::string ExtractFileName(std::string full_path);
-  static std::string ExtractPath(std::string full_path);
-  static void GetAllImagesInFolder(const char *root_path, std::vector<cv::String> &imgs);
+  static std::string ExtractFileName(const std::string& full_path);
+  static std::string ExtractPath(const std::string& full_path);
+  static void GetAllImagesInFolder(const char *root_path, std::vector<cv::String>& imgs);
 };
-
-bool comparator(const Head& lhs, const Head& rhs);
 
 #endif // SRC_LIBRARY_INCLUDE_SAVEDATA_H

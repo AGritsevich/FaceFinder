@@ -49,7 +49,7 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
   return true;
 }
 
-  std::string FilesystemHelper::ExtractFileName(std::string full_path) {
+  std::string FilesystemHelper::ExtractFileName(const std::string& full_path) {
     size_t pos = full_path.find_last_of(kDirSeparators);
     std::string file_name;
     if (pos == std::string::npos) {// it's file name
@@ -60,7 +60,7 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
     return file_name;
   }
 
-  std::string FilesystemHelper::ExtractPath(std::string full_path) {
+  std::string FilesystemHelper::ExtractPath(std::string& full_path) {
     std::string path;
     size_t pos = full_path.find_last_of(kDirSeparators);
     if (pos == std::string::npos) {// it's file name
@@ -79,20 +79,4 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
 
     cv::glob(path + "*.*", imgs, true); // true - recursive
     // return sorted strings
-  }
-
-  bool comparator(const Head& lhs, const Head& rhs) {
-    if (0 <= lhs.file_name_.compare(rhs.file_name_)) {
-      return true;
-    }
-
-    if (lhs.face_.size().height > rhs.face_.size().height) {
-      return true;
-    }
-
-    if (lhs.face_.size().width > rhs.face_.size().width) {
-      return true;
-    }
-
-    return true;
   }

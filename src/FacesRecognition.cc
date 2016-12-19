@@ -12,22 +12,22 @@
  
 
 FacesRecognition::FacesRecognition() {
-//    if ( !m_fs_face_cascade_cliche.open(
-//             "haarcascade_frontalface_alt.xml",
-//             cv::FileStorage::READ)) {
-//        throw "Can't open haarcascade_frontalface_alt.xml cascade";
-//    }
-//    if ( !m_fs_eyes_cascade_cliche.open(
-//                "haarcascade_eye_tree_eyeglasses.xml",
-//                cv::FileStorage::READ)) {
-//        throw "Can't open haarcascade_eye_tree_eyeglasses.xml cascade";
-//    }
+    if ( !m_fs_face_cascade_cliche.open(
+             "haarcascade_frontalface_alt.xml",
+             cv::FileStorage::READ)) {
+        throw "Can't open haarcascade_frontalface_alt.xml cascade";
+    }
+    if ( !m_fs_eyes_cascade_cliche.open(
+                "haarcascade_eye_tree_eyeglasses.xml",
+                cv::FileStorage::READ)) {
+        throw "Can't open haarcascade_eye_tree_eyeglasses.xml cascade";
+    }
 
-//    if ( !m_fs_mouth_cascade_cliche.open(
-//             "haarcascade_smile.xml",
-//             cv::FileStorage::READ)) {
-//        throw "Can't open haarcascade_smile.xml cascade";
-//    }
+    if ( !m_fs_mouth_cascade_cliche.open(
+             "haarcascade_smile.xml",
+             cv::FileStorage::READ)) {
+        throw "Can't open haarcascade_smile.xml cascade";
+    }
 }
 
 People FacesRecognition::ThreadFacade(const std::string& path) {
@@ -73,20 +73,20 @@ void FacesRecognition::SaveFace(const cv::Mat src_img, const cv::Rect face, cons
   std::string file_name = path.substr(0, path.size() - 4) + "_face_#" + std::to_string(n) + ".jpg";
   cv::Mat corp(src_img, face); // Copy?
   cv::Mat reflected_face = Reflect(corp);
-  cv::imwrite(file_name, reflected_face); // CV_IMWRITE_JPEG_QUALITY
+  cv::imwrite(file_name.c_str(), reflected_face); // CV_IMWRITE_JPEG_QUALITY
 }
 
 People FacesRecognition::CollectPeople(const std::string& image_path) {
   using namespace cv;
 
   //-- 1. Load the cascades
-  cv::CascadeClassifier face_cascade("haarcascade_frontalface_alt.xml");
-  cv::CascadeClassifier eyes_cascade("m_fs_eyes_cascade_cliche.xml");
-  cv::CascadeClassifier mouth_cascade("haarcascade_smile.xml");
-  
-  //face_cascade.read( m_fs_face_cascade_cliche.getFirstTopLevelNode());
-  //eyes_cascade.read( m_fs_eyes_cascade_cliche.getFirstTopLevelNode());
-  //mouth_cascade.read( m_fs_mouth_cascade_cliche.getFirstTopLevelNode());
+  cv::CascadeClassifier face_cascade;
+  cv::CascadeClassifier eyes_cascade;
+  cv::CascadeClassifier mouth_cascade;
+
+  face_cascade.read( m_fs_face_cascade_cliche.getFirstTopLevelNode());
+  eyes_cascade.read( m_fs_eyes_cascade_cliche.getFirstTopLevelNode());
+  mouth_cascade.read( m_fs_mouth_cascade_cliche.getFirstTopLevelNode());
 
   {
       std::ofstream check_file;
@@ -97,7 +97,7 @@ People FacesRecognition::CollectPeople(const std::string& image_path) {
       }
   }
   //-- 2. Read the image file
-  Mat src_image = imread(image_path, CV_LOAD_IMAGE_COLOR);   // Read the file
+  Mat src_image = imread(image_path.c_str(), CV_LOAD_IMAGE_COLOR);   // Read the file
 
   if(!src_image.data ) // Check for invalid input
   {
@@ -132,8 +132,5 @@ People FacesRecognition::CollectPeople(const std::string& image_path) {
     SaveFace(src_image, face, image_path, i++);
   }
 
-  //-- Show what you got
-  //imshow( "Foo", image );
-  // int c = waitKey(10);
   return people_on_photo;
 }
