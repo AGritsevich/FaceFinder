@@ -9,8 +9,6 @@ if((NOT OPENCV_SUBMODULE_DIR) OR (NOT EXISTS ${OPENCV_SUBMODULE_DIR}/include))
 
     # manualy run git submodule init
     execute_process(COMMAND git submodule update --init)
-else()
-    message(STATUS "OpenCV submodule found")
 endif()
 
 # Prepare and configure build of OpenCV
