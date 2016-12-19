@@ -28,7 +28,7 @@ if((NOT EXISTS ${OPENCV_BUILD_DIR}))
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/
     )
     #TODO rebuild opencv if change Debug/Release
-    execute_process(COMMAND make -j6 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/ )
+    execute_process(COMMAND make -j WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/ )
     execute_process(COMMAND make install WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/opencv/ )
     file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/opencv/)
 endif()
