@@ -1,6 +1,6 @@
 
 #include "Utils.h"
-#include "glob.h"
+#include <opencv2/core/utility.hpp>
 
 jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
   jsonxx::Array directory;
@@ -49,7 +49,7 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
   return true;
 }
 
-  std::string FilesystemHelper::ExtractFileName(std::string full_path) {
+  std::string FilesystemHelper::ExtractFileName(const std::string& full_path) {
     size_t pos = full_path.find_last_of(kDirSeparators);
     std::string file_name;
     if (pos == std::string::npos) {// it's file name
@@ -60,7 +60,7 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
     return file_name;
   }
 
-  std::string FilesystemHelper::ExtractPath(std::string full_path) {
+  std::string FilesystemHelper::ExtractPath(std::string& full_path) {
     std::string path;
     size_t pos = full_path.find_last_of(kDirSeparators);
     if (pos == std::string::npos) {// it's file name
@@ -71,29 +71,12 @@ jsonxx::Array JsonAdapter::PrepareJson(const AsyncDataList& people) {
     return path;
   }
 
-  ImagesPathes FilesystemHelper::GetAllImagesInFolder(std::string& path) {
-    ImagesPathes imgs;
-    if (path.at(path.size() - 1) != kDirSeparators[0]) {
+  void FilesystemHelper::GetAllImagesInFolder(const char* root_path, std::vector<cv::String>& imgs) {
+    std::string path(root_path);
+      if (path.at(path.size() - 1) != kDirSeparators[0]) {
       path += kDirSeparators;
     }
 
-    glob(path + "*.*", imgs, true); // true - recursive
+    cv::glob(path + "*.*", imgs, true); // true - recursive
     // return sorted strings
-    return imgs;
-  }
-
-  bool comparator(const Head& lhs, const Head& rhs) {
-    if (0 <= lhs.file_name_.compare(rhs.file_name_)) {
-      return true;
-    }
-
-    if (lhs.face_.size().height > rhs.face_.size().height) {
-      return true;
-    }
-
-    if (lhs.face_.size().width > rhs.face_.size().width) {
-      return true;
-    }
-
-    return true;
   }

@@ -61,9 +61,9 @@ enum Format {
 };
 
 // Types
-using Number long double;
+using Number = long double;
 using Boolean = bool;
-using String = td::string;
+using String = std::string;
 struct Null {};
 class Value;
 class Object;
