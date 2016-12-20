@@ -5,6 +5,9 @@ Than in multi threaded mode processing all image for faces.
 Faces cutting from parent image and save near with parent file.
 For one folder it creates result.json that contain X & Y coordinate in parent image for face, eyes, mouth.
 
+###Dependency 
+- CMake 2.8.11 minimal
+- git command line utils
 
 ###Project uses: 
 - OpenCV like submodule
